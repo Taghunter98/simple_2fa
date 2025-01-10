@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>2FA Verification</title>
+  </head>
+  <body>
+    <h1>Enter the 2FA Code</h1>
+    <form action="http://127.0.0.1:5000/verify" method="POST" id="verifyForm">
+      <label for="code">Enter Code:</label>
+      <input type="text" id="code" name="code" required />
+      <button type="submit">Verify</button>
+    </form>
+    <p id="message"></p>
+  </body>
+  <script>
+    const form = document.getElementById("verifyForm");
+    form.addEventListener("submit", async (event) => {
+      event.preventDefault();
+
+      const formData = new FormData(form);
+      const response = await fetch("http://127.0.0.1:5000/verify", {
+        method: "POST",
+        body: formData,
+      });
+
+      const result = await response.json();
+      const messageElement = document.getElementById("message");
+
+      if (response.ok) {
+        messageElement.style.color = "green";
+        messageElement.textContent = result.message;
+      } else {
+        messageElement.style.color = "red";
+        messageElement.textContent = result.error || result.message;
+      }
+    });
+  </script>
+</html>
